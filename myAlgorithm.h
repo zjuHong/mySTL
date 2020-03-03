@@ -1,0 +1,84 @@
+#ifndef _MYALGORITHM_H
+#define _MYALGORITHM_H
+#include "myStruct.h"
+#include <cstring>
+//待完善：特征萃取器的应用
+namespace myAlgorithm{
+/*****************************************底层算法***************************************/
+    template<class ForwardIterator, class Size, class T>
+    inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T& x) {
+        ForwardIterator cur = first;
+        for (; n > 0; --n, ++cur) 
+            construct(&*cur, x);
+        return cur;
+    }
+
+    template<class ForwardIterator, class T>
+    inline void fill(ForwardIterator first, ForwardIterator last, const T& x) {
+        ForwardIterator cur = first;
+        for (; cur != last; ++cur) 
+            construct(&*cur, x);
+    }
+
+    template<class ForwardIterator, class T>
+    inline ForwardIterator uninitialized_fill(ForwardIterator first, ForwardIterator last, const T& x) {
+        ForwardIterator cur = first;
+        for (; cur != last; ++cur) 
+            construct(&*cur, x);
+        return cur;
+    }
+
+    template<class InputIterator, class ForwardIterator>
+    inline ForwardIterator uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator result) {
+        ForwardIterator cur = result;
+        for (; first != last; ++first, ++cur) 
+            construct(&*cur, *first);
+        return cur;
+    }
+
+    template<class InputIterator, class OutputIterator>
+    inline OutputIterator copy(InputIterator first, InputIterator last, OutputIterator result) {
+        for (; first != last; ++first, ++result)
+            *result = *first;
+        return result;
+    }
+    template<class BidirectionalIterator1, class BidirectionalIterator2>
+    inline BidirectionalIterator2 copy_backward(BidirectionalIterator1 first, BidirectionalIterator1 last, BidirectionalIterator2 result) {
+        while (first != last)
+            *--result = *--last;
+        return result;
+    }
+
+    template<class InputIterator, class difference_type>
+    void distance(InputIterator first, InputIterator last, difference_type& dis) {
+        dis = 0;
+        while (first != last) {
+            first++;
+            dis++;
+        }
+    }
+
+/*****************************************上层算法***************************************/
+    template <class InputIterator, class T>
+    ptrdiff_t count(InputIterator first, InputIterator last, const T& value) {
+        ptrdiff_t n;
+        for (; first != last; first++)
+            if (*first == value)
+                ++n;
+        return n;
+    }
+
+    template <class InputIterator, class T>
+    InputIterator find(InputIterator first, InputIterator last, const T& value) {
+        while (first != last && *first != value) first++;
+        return first;
+    }
+
+    template <class InputIterator>
+    inline void swap(InputIterator& a, InputIterator& b) {
+        InputIterator tmp = a;
+        a = b;
+        a = tmp;
+    }
+}
+#endif
