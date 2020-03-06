@@ -2,6 +2,7 @@
 #define _MYLIST_H
 #include "myAlgorithm.h"
 #include "myAllocator.h"
+#include "myTrait.h"
 template<class T>
 struct __list_node
 {
@@ -16,6 +17,7 @@ struct __list_iterator
 {
 public:
     /****************************特性*****************************/
+    typedef myTraits::bidirectional_iterator_tag iterator_category;
     typedef __list_iterator<T, T&, T*>  iterator;
     typedef __list_iterator<T, Ref, Ptr>  self;
     typedef T   value_type;
@@ -73,7 +75,7 @@ public:
     bool empty() { return node->next == node; }
     size_type size() {
         size_type result = 0;
-        myAlgorithm::distance(begin(), end(), result);
+        myAlgorithm::distance(begin(), end());
         return result;
     }
     reference front() { return *begin(); }

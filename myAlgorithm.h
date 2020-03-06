@@ -2,6 +2,7 @@
 #define _MYALGORITHM_H
 #include "myStruct.h"
 #include <cstring>
+#include "myTrait.h"
 //待完善：特征萃取器的应用
 namespace myAlgorithm{
 /*****************************************底层算法***************************************/
@@ -49,13 +50,36 @@ namespace myAlgorithm{
         return result;
     }
 
-    template<class InputIterator, class difference_type>
-    void distance(InputIterator first, InputIterator last, difference_type& dis) {
-        dis = 0;
+    // template<class InputIterator, class difference_type>
+    // void distance(InputIterator first, InputIterator last, difference_type& dis) {
+    //     dis = 0;
+    //     while (first != last) {
+    //         first++;
+    //         dis++;
+    //     }
+    // }
+    template<class InputIterator>
+    inline typename myTraits::iterator_traits<InputIterator>::difference_type 
+    __distance(InputIterator first, InputIterator last, myTraits::input_iterator_tag) {
+        typename myTraits::iterator_traits<InputIterator>::difference_type n = 0;
         while (first != last) {
             first++;
-            dis++;
+            n++;
         }
+        return n;
+    }
+
+    template<class random_access_iterator>
+    inline typename myTraits::iterator_traits<random_access_iterator>::difference_type 
+    __distance(random_access_iterator first, random_access_iterator last, myTraits::random_access_iterator_tag) {
+        return last - first;
+    }
+    
+    template<class InputIterator>
+    inline typename myTraits::iterator_traits<InputIterator>::difference_type 
+    distance(InputIterator first, InputIterator last) {
+        typedef typename myTraits::iterator_traits<InputIterator>::iterator_category category;
+        return myAlgorithm::__distance(first, last, category());
     }
 
 /*****************************************上层算法***************************************/
