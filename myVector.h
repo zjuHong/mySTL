@@ -13,6 +13,7 @@ public:
     typedef value_type& reference;
     typedef size_t size_type;
     typedef ptrdiff_t difference_type;
+    typedef myTraits::random_access_iterator_tag iterator_category;
 
     /****************************常用成员函数*****************************/
     iterator begin() { return start; }

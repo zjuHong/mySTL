@@ -3,7 +3,6 @@
 #include "myStruct.h"
 #include <cstring>
 #include "myTrait.h"
-//待完善：特征萃取器的应用
 namespace myAlgorithm{
 /*****************************************底层算法***************************************/
     template<class ForwardIterator, class Size, class T>
@@ -36,13 +35,45 @@ namespace myAlgorithm{
             construct(&*cur, *first);
         return cur;
     }
-
-    template<class InputIterator, class OutputIterator>
-    inline OutputIterator copy(InputIterator first, InputIterator last, OutputIterator result) {
+    // 无特征萃取器版本
+    template<class RandomAccessIterator, class OutputIterator>
+    inline OutputIterator copy(RandomAccessIterator first, RandomAccessIterator last, 
+        OutputIterator result) {
         for (; first != last; ++first, ++result)
             *result = *first;
         return result;
     }
+    // template<class RandomAccessIterator, class OutputIterator, class Distance>
+    // inline OutputIterator __copy(RandomAccessIterator first, RandomAccessIterator last, 
+    //     OutputIterator result, myTraits::random_access_iterator_tag, Distance*) {
+    //     for (Distance n = last - first; n > 0; --n, ++first, ++result)
+    //         *result = *first;
+    //     return result;
+    // }
+    // template<class InputIterator, class OutputIterator, class Distance>
+    // inline OutputIterator __copy(InputIterator first, InputIterator last, 
+    //     OutputIterator result, myTraits::input_iterator_tag, Distance*) {
+    //     for (; first != last; ++first, ++result)
+    //         *result = *first;
+    //     return result;
+    // }
+    // template<class InputIterator, class OutputIterator>
+    // inline OutputIterator copy(InputIterator first, InputIterator last, OutputIterator result) {
+    //     return __copy(first, last, result, myTraits::iterator_category(first), myTraits::distance_type(first));
+    // }
+    // template<class T>//原生指针偏特化版本
+    // inline T* copy(T* first, T* last, T* result) {
+    //     return __copy(first, last, result, myTraits::random_access_iterator_tag(), myTraits::distance_type(first));
+    // }
+    // inline char* copy(const char* first, const char* last, char* result) {
+    //     memmove(result, first, last - first);
+    //     return result + (last - first);
+    // }
+    // inline wchar_t* copy(const wchar_t* first, const wchar_t* last, wchar_t* result) {
+    //     memmove(result, first, last - first);
+    //     return result + (last - first);
+    // }
+
     template<class BidirectionalIterator1, class BidirectionalIterator2>
     inline BidirectionalIterator2 copy_backward(BidirectionalIterator1 first, BidirectionalIterator1 last, BidirectionalIterator2 result) {
         while (first != last)
@@ -50,14 +81,6 @@ namespace myAlgorithm{
         return result;
     }
 
-    // template<class InputIterator, class difference_type>
-    // void distance(InputIterator first, InputIterator last, difference_type& dis) {
-    //     dis = 0;
-    //     while (first != last) {
-    //         first++;
-    //         dis++;
-    //     }
-    // }
     template<class InputIterator>
     inline typename myTraits::iterator_traits<InputIterator>::difference_type 
     __distance(InputIterator first, InputIterator last, myTraits::input_iterator_tag) {

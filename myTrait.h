@@ -16,8 +16,8 @@ namespace myTraits {
         typedef         Point                          pointer;
         typedef         Reference                      reference;
     };
-
-    //traits榨汁机
+    
+    /****************************traits榨汁机*****************************/
     template <class Iterator> 
     struct iterator_traits {
         typedef typename Iterator::iterator_category iterator_category;
@@ -26,8 +26,7 @@ namespace myTraits {
         typedef typename Iterator::reference         reference;
         typedef typename Iterator::difference_type   difference_type;
     };
-
-    //traits偏特化版
+    /****************************traits偏特化版*****************************/
     template <class T>
     struct iterator_traits<T*> {
         typedef random_access_iterator_tag  iterator_category;
@@ -36,7 +35,6 @@ namespace myTraits {
         typedef T*                          pointer;
         typedef T&                          reference;
     };
-
     template <class T>
     struct iterator_traits<const T*> {
         typedef random_access_iterator_tag  iterator_category;
@@ -46,6 +44,7 @@ namespace myTraits {
         typedef const T&                    reference;
     };
 
+    /****************************具体萃取函数*****************************/
     template <class Iterator>
     inline typename iterator_traits<Iterator>::iterator_category iterator_category(const Iterator&) {
         typename iterator_traits<Iterator>::iterator_category category;
@@ -53,7 +52,7 @@ namespace myTraits {
     };
 
     template <class Iterator>
-    inline typename iterator_traits<Iterator>::difference_type* difference_type(const Iterator&) {
+    inline typename iterator_traits<Iterator>::difference_type* distance_type(const Iterator&) {
         return static_cast<typename iterator_traits<Iterator>::difference_type*>(0);   
     };
 
