@@ -11,6 +11,7 @@ public:
     typedef value_type* pointer;
     typedef value_type* iterator;
     typedef value_type& reference;
+    typedef const value_type& const_reference;
     typedef size_t size_type;
     typedef ptrdiff_t difference_type;
     typedef myTraits::random_access_iterator_tag iterator_category;
@@ -30,6 +31,12 @@ public:
     myVector(size_type n, const T& value) { fill_initialize(n, value); }
     myVector(int n, const T& value) { fill_initialize(n, value); }
     myVector(long n, const T& value) { fill_initialize(n, value); }
+    template <class InputIterator> 
+    myVector(InputIterator first, InputIterator last) {
+        difference_type n = difference_type(last - first);
+        fill_initialize(n, value_type());
+        myAlgorithm::copy(first, last, start);
+    }
     explicit myVector(size_type n) { fill_initialize(n, T()); }
     ~myVector() { 
         destory(start, finish);

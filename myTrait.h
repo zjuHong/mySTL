@@ -47,7 +47,7 @@ namespace myTraits {
     /****************************具体萃取函数*****************************/
     template <class Iterator>
     inline typename iterator_traits<Iterator>::iterator_category iterator_category(const Iterator&) {
-        typename iterator_traits<Iterator>::iterator_category category;
+        typedef typename iterator_traits<Iterator>::iterator_category category;
         return category();   
     };
 

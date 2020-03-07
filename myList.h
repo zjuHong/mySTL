@@ -69,14 +69,14 @@ public:
     typedef __list_iterator<T, T&, T*>  iterator;
     typedef size_t size_type;
     typedef link_type reference;
+    typedef T value_type;
+    typedef const link_type const_reference;
     /****************************常用成员函数*****************************/
     iterator begin() { return (link_type)((*node).next); }
     iterator end() { return node; }
     bool empty() { return node->next == node; }
     size_type size() {
-        size_type result = 0;
-        myAlgorithm::distance(begin(), end());
-        return result;
+        return myAlgorithm::distance(begin(), end());
     }
     reference front() { return *begin(); }
     reference back() { return *(--end()); }   

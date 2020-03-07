@@ -8,7 +8,6 @@ struct __deque_iterator
 {        
 public:
     /****************************特性*****************************/
-    // using iterator_category = typename myTraits::random_access_iterator_tag();
     typedef typename myTraits::random_access_iterator_tag iterator_category;
     typedef __deque_iterator<T, BufSiz> iterator;
     typedef __deque_iterator<T, BufSiz> const_iterator;     
@@ -106,6 +105,7 @@ public:
     typedef T value_type;
     typedef value_type* pointer;
     typedef value_type& reference;
+    typedef const value_type& const_reference;
     typedef size_t size_type;
     typedef ptrdiff_t difference_type;
     typedef pointer* map_pointer;
@@ -182,8 +182,11 @@ public:
     myDeque(int n, const value_type& value) : start(), finish(), map(0), map_size(0) {
         fill_initialize(n, value);
     }
-    myDeque(int n) : start(0), finish(0), map_size(0) {
+    myDeque(int n) : start(), finish(), map_size(0) {
         fill_initialize(n, value_type());
+    }
+    myDeque(void) : start(), finish(), map_size(0) {
+        fill_initialize(0, value_type());
     }
     ~myDeque() {
         if (map != nullptr) {
