@@ -1,7 +1,7 @@
 #ifndef _TRAIT_H
 #define _TRAIT_H
 #include <cstring>
-namespace myTraits {
+namespace mySTL {
     struct input_iterator_tag {};
     struct output_iterator_tag {};
     struct forward_iterator_tag : public input_iterator_tag{};

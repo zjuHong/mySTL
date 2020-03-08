@@ -14,7 +14,7 @@ public:
     typedef const value_type& const_reference;
     typedef size_t size_type;
     typedef ptrdiff_t difference_type;
-    typedef myTraits::random_access_iterator_tag iterator_category;
+    typedef mySTL::random_access_iterator_tag iterator_category;
 
     /****************************常用成员函数*****************************/
     iterator begin() { return start; }
@@ -35,7 +35,7 @@ public:
     myVector(InputIterator first, InputIterator last) {
         difference_type n = difference_type(last - first);
         fill_initialize(n, value_type());
-        myAlgorithm::copy(first, last, start);
+        mySTL::copy(first, last, start);
     }
     explicit myVector(size_type n) { fill_initialize(n, T()); }
     ~myVector() { 
@@ -87,7 +87,7 @@ protected:
     /****************************内存相关成员函数*****************************/
     iterator allocate_and_fill(size_type n, const T& x) {
         iterator result = data_allocator::allocate(n);
-        myAlgorithm::uninitialized_fill_n(result, n, x);
+        mySTL::uninitialized_fill_n(result, n, x);
         return result;
     }
     void fill_initialize(size_type n, const T& value) {
@@ -106,7 +106,7 @@ void myVector<T, Alloc>:: insert_aux(iterator position, const T& x) {
         construct(finish, *(finish - 1));
         ++finish;
         T xCopy = x;
-        myAlgorithm::copy_backward(position, finish - 2, finish - 1);
+        mySTL::copy_backward(position, finish - 2, finish - 1);
         *position = xCopy;
     }
     else {
@@ -115,10 +115,10 @@ void myVector<T, Alloc>:: insert_aux(iterator position, const T& x) {
         iterator new_start = data_allocator::allocate(len);
         iterator new_finish = new_start;
         try {
-            new_finish = myAlgorithm::uninitialized_copy(start, position, new_start);
+            new_finish = mySTL::uninitialized_copy(start, position, new_start);
             construct(new_finish, x);
             ++new_finish;
-            new_finish = myAlgorithm::uninitialized_copy(position, finish, new_finish);
+            new_finish = mySTL::uninitialized_copy(position, finish, new_finish);
         }
         catch(...) {
             destory(new_start, new_finish);
@@ -142,17 +142,17 @@ void myVector<T, Alloc>::insert(iterator position, size_type n, const T& x) {
         const size_type elems_after = finish - position;
         iterator old_finish = finish;
         if (elems_after > n) {//分两次复制的目的是防止交叉的部分被覆盖
-            myAlgorithm::uninitialized_copy(finish - n, finish, finish);
+            mySTL::uninitialized_copy(finish - n, finish, finish);
             finish += n;
-            myAlgorithm::copy_backward(position, position + n, old_finish);
-            myAlgorithm::fill(position, position + n, xCopy);
+            mySTL::copy_backward(position, position + n, old_finish);
+            mySTL::fill(position, position + n, xCopy);
         }
         else {
-            myAlgorithm::uninitialized_fill_n(finish, n - elems_after, xCopy);
+            mySTL::uninitialized_fill_n(finish, n - elems_after, xCopy);
             finish += n;
-            myAlgorithm::uninitialized_copy(position, old_finish, finish);
+            mySTL::uninitialized_copy(position, old_finish, finish);
             finish += elems_after;
-            myAlgorithm::fill(position, old_finish, xCopy);
+            mySTL::fill(position, old_finish, xCopy);
         }
     }
     else {
@@ -161,9 +161,9 @@ void myVector<T, Alloc>::insert(iterator position, size_type n, const T& x) {
         iterator new_start = data_allocator::allocate(len);
         iterator new_finish = new_start;
         try {
-            new_finish = myAlgorithm::uninitialized_copy(start, position, new_start);
-            new_finish = myAlgorithm::uninitialized_fill_n(new_finish, n, x);
-            new_finish = myAlgorithm::uninitialized_copy(position, finish, new_finish);
+            new_finish = mySTL::uninitialized_copy(start, position, new_start);
+            new_finish = mySTL::uninitialized_fill_n(new_finish, n, x);
+            new_finish = mySTL::uninitialized_copy(position, finish, new_finish);
         }
         catch(...) {
             destory(new_start, new_finish);

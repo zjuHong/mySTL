@@ -4,6 +4,8 @@
 #include "myStack.h"
 #include "myQueue.h"
 #include "myPriority_queue.h"
+#include "mySet.h"
+#include "myMap.h"
 int main() {
     cout << "vector:";
     myVector<int> test(9, 0);
@@ -13,7 +15,7 @@ int main() {
     cout << test.size() << endl;
     test.insert(test.begin() + 3, 2, 8);
     test.erase(test.begin() + 3);
-    myAlgorithm::swap(test[0], test[1]);
+    mySTL::swap(test[0], test[1]);
     for (auto iter = test.begin(); iter != test.end(); iter++) {
         cout << *iter << ' ';
     }
@@ -36,9 +38,8 @@ int main() {
     d.push_front(23);
     auto i = d.begin() + 2;
     d.erase(i);
-    for (auto iter = d.begin(); iter != d.end(); iter++) {
+    for (auto iter = d.begin(); iter != d.end(); iter++) 
         cout << *iter << ' ';
-    }  
 
     cout << "\nstack:";
     myStack<int, myDeque<int>> s;
@@ -61,6 +62,24 @@ int main() {
         cout << iqa.top() << ' ';
         iqa.pop();
     }
+
+    cout << "\nset:";
+    mySet<int> set;
+    set.insert(3);
+    set.insert(5);
+    set.insert(2);
+    cout << set.size() << endl;
+    for (auto iter = set.begin(); iter != set.end(); iter++)
+        cout << *iter << ' ';
+
+    cout << "\nmap:";
+    myMap<int, int> m;
+    m[1] = 3;
+    m[8] = 6;
+    m[9] = 8;
+    cout << m.size() << endl;
+    for (auto iter = m.begin(); iter != m.end(); iter++)
+        cout << iter->second << ' ';
 
     system("pause");
     return 0;

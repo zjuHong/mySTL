@@ -28,7 +28,7 @@ namespace myAlgorithm {
         class Compare = less<typename RandomAccessIterator::value_type>>
     inline void push_heap(RandomAccessIterator first, RandomAccessIterator last, 
         const Compare &comp = Compare()) {
-        __push_heap_aux(first, last, myTraits::distance_type(first), myTraits::value_type(first), comp);
+        __push_heap_aux(first, last, mySTL::distance_type(first), mySTL::value_type(first), comp);
     }
     
     template <class RandomAccessIterator, class Distance, class T, 
@@ -63,13 +63,13 @@ namespace myAlgorithm {
         class Compare = less<typename RandomAccessIterator::value_type>>
     inline void __pop_heap_aux(RandomAccessIterator first, RandomAccessIterator last, T*, 
         const Compare &comp = Compare()) {
-        __pop_heap(first, last - 1, last - 1, T(*(last - 1)), myTraits::distance_type(first), comp);
+        __pop_heap(first, last - 1, last - 1, T(*(last - 1)), mySTL::distance_type(first), comp);
     }
     template <class RandomAccessIterator, 
         class Compare = less<typename RandomAccessIterator::value_type>>
     inline void pop_heap(RandomAccessIterator first, RandomAccessIterator last, 
         const Compare &comp = Compare()) {
-        __pop_heap_aux(first, last, myTraits::value_type(first), comp);
+        __pop_heap_aux(first, last, mySTL::value_type(first), comp);
     }
 
     template <class RandomAccessIterator, class Compare = less<typename RandomAccessIterator::value_type>>
@@ -102,7 +102,7 @@ namespace myAlgorithm {
         class Compare = less<typename RandomAccessIterator::value_type>>
     inline void make_heap(RandomAccessIterator first, RandomAccessIterator last, 
         const Compare &comp = Compare()) {
-        __make_heap(first, last, myTraits::value_type(first), myTraits::distance_type(first), comp);
+        __make_heap(first, last, mySTL::value_type(first), mySTL::distance_type(first), comp);
     }
 }
 #endif

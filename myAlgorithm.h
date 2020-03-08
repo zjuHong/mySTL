@@ -3,7 +3,7 @@
 #include "myStruct.h"
 #include <cstring>
 #include "myTrait.h"
-namespace myAlgorithm{
+namespace mySTL{
 /*****************************************底层算法***************************************/
     template<class ForwardIterator, class Size, class T>
     inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T& x) {
@@ -37,25 +37,25 @@ namespace myAlgorithm{
     }
     template<class RandomAccessIterator, class OutputIterator, class Distance>
     inline OutputIterator __copy(RandomAccessIterator first, RandomAccessIterator last, 
-        OutputIterator result, myTraits::random_access_iterator_tag, Distance*) {
+        OutputIterator result, mySTL::random_access_iterator_tag, Distance*) {
         for (Distance n = last - first; n > 0; --n, ++first, ++result)
             *result = *first;
         return result;
     }
     template<class InputIterator, class OutputIterator, class Distance>
     inline OutputIterator __copy(InputIterator first, InputIterator last, 
-        OutputIterator result, myTraits::input_iterator_tag, Distance*) {
+        OutputIterator result, mySTL::input_iterator_tag, Distance*) {
         for (; first != last; ++first, ++result)
             *result = *first;
         return result;
     }
     template<class InputIterator, class OutputIterator>
     inline OutputIterator copy(InputIterator first, InputIterator last, OutputIterator result) {
-        return __copy(first, last, result, myTraits::iterator_category(first), myTraits::distance_type(first));
+        return __copy(first, last, result, mySTL::iterator_category(first), mySTL::distance_type(first));
     }
     template<class T>//原生指针偏特化版本
     inline T* copy(T* first, T* last, T* result) {
-        return __copy(first, last, result, myTraits::random_access_iterator_tag(), myTraits::distance_type(first));
+        return __copy(first, last, result, mySTL::random_access_iterator_tag(), mySTL::distance_type(first));
     }
     inline char* copy(const char* first, const char* last, char* result) {
         memmove(result, first, last - first);
@@ -74,9 +74,9 @@ namespace myAlgorithm{
     }
 
     template<class InputIterator>
-    inline typename myTraits::iterator_traits<InputIterator>::difference_type 
-    __distance(InputIterator first, InputIterator last, myTraits::input_iterator_tag) {
-        typename myTraits::iterator_traits<InputIterator>::difference_type n = 0;
+    inline typename mySTL::iterator_traits<InputIterator>::difference_type 
+    __distance(InputIterator first, InputIterator last, mySTL::input_iterator_tag) {
+        typename mySTL::iterator_traits<InputIterator>::difference_type n = 0;
         while (first != last) {
             first++;
             n++;
@@ -85,16 +85,16 @@ namespace myAlgorithm{
     }
 
     template<class random_access_iterator>
-    inline typename myTraits::iterator_traits<random_access_iterator>::difference_type 
-    __distance(random_access_iterator first, random_access_iterator last, myTraits::random_access_iterator_tag) {
+    inline typename mySTL::iterator_traits<random_access_iterator>::difference_type 
+    __distance(random_access_iterator first, random_access_iterator last, mySTL::random_access_iterator_tag) {
         return last - first;
     }
     
     template<class InputIterator>
-    inline typename myTraits::iterator_traits<InputIterator>::difference_type 
+    inline typename mySTL::iterator_traits<InputIterator>::difference_type 
     distance(InputIterator first, InputIterator last) {
-        typedef typename myTraits::iterator_traits<InputIterator>::iterator_category category;
-        return myAlgorithm::__distance(first, last, category());
+        typedef typename mySTL::iterator_traits<InputIterator>::iterator_category category;
+        return mySTL::__distance(first, last, category());
     }
 
 /*****************************************上层算法***************************************/
