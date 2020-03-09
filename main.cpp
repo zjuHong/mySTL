@@ -6,6 +6,10 @@
 #include "myPriority_queue.h"
 #include "mySet.h"
 #include "myMap.h"
+#include "myUnordered_map.h"
+#include "myUnordered_set.h"
+#include <iostream>
+using namespace std;
 int main() {
     cout << "vector:";
     myVector<int> test(9, 0);
@@ -19,6 +23,7 @@ int main() {
     for (auto iter = test.begin(); iter != test.end(); iter++) {
         cout << *iter << ' ';
     }
+
     cout << "\nlist:";
     myList<int> list;
     list.push_back(0);
@@ -30,16 +35,6 @@ int main() {
     for (auto iter = list.begin(); iter != list.end(); iter++) {
         cout << *iter << ' ';
     }    
-    cout << "\ndeque:";
-    myDeque<int> d(3, 7);
-    d.push_back(2);
-    d.pop_front();
-    d.pop_back();
-    d.push_front(23);
-    auto i = d.begin() + 2;
-    d.erase(i);
-    for (auto iter = d.begin(); iter != d.end(); iter++) 
-        cout << *iter << ' ';
 
     cout << "\nstack:";
     myStack<int, myDeque<int>> s;
@@ -77,9 +72,29 @@ int main() {
     m[1] = 3;
     m[8] = 6;
     m[9] = 8;
+    m.erase(m.begin());
     cout << m.size() << endl;
     for (auto iter = m.begin(); iter != m.end(); iter++)
         cout << iter->second << ' ';
+
+    cout << "\nunoedered_map:";
+    myUnordered_map<int, int> um;
+    um[1] = 3;
+    um[8] = 6;
+    um[9] = 8;
+    um.erase(um.begin());
+    cout << um.size() << endl;
+    for (auto iter = um.begin(); iter != um.end(); iter++)
+        cout << iter->second << ' ';
+        
+    cout << "\nunoedered_set:";
+    myUnordered_set<int> us;
+    us.insert(3);
+    us.insert(5);
+    us.insert(2);
+    cout << us.size() << endl;
+    for (auto iter = us.begin(); iter != us.end(); iter++)
+        cout << *iter << ' ';
 
     system("pause");
     return 0;

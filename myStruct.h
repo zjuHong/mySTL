@@ -6,13 +6,13 @@ inline void construct(T1* p, T2& value) {
 }
 
 template <class T>
-inline void destory(T *pointer) {
+inline void destroy(T *pointer) {
     pointer->~T();
 }
 template <class ForwardIterator>
-inline void destory(ForwardIterator first, ForwardIterator last) {
+inline void destroy(ForwardIterator first, ForwardIterator last) {
     for (; first != last; ++first)
-        destory(&*first);
+        destroy(&*first);
 }   
 // struct __true_type { };
 // struct __false_type { };

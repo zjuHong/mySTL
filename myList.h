@@ -109,7 +109,7 @@ protected:
         return p;
     }
     void destory_node(link_type p) {
-        destory(&p->data);
+        destroy(&p->data);
         put_node(p);
     }
     void empty_initialize(void) {

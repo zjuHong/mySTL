@@ -39,7 +39,7 @@ public:
     }
     explicit myVector(size_type n) { fill_initialize(n, T()); }
     ~myVector() { 
-        destory(start, finish);
+        destroy(start, finish);
         deallocate();
     }
     /****************************常用成员函数*****************************/
@@ -53,18 +53,18 @@ public:
     }
     void pop_back() {
         --finish;
-        destory(finish);
+        destroy(finish);
     }
     iterator erase(iterator position) {
         if (position + 1 != end())
             copy(position + 1, finish, position);
         --finish;
-        destory(finish);
+        destroy(finish);
         return position;
     }
     iterator erase(iterator first, iterator last) {
         iterator i = copy(last, finish, first);
-        destory(i, finish);
+        destroy(i, finish);
         finish = finish - (last - first);
         return first;
     }
@@ -73,6 +73,22 @@ public:
             erase(begin() + new_size, end());
         else
             insert(end(), new_size - size(), x); 
+    }
+    inline void reserve(size_type new_capacity) {
+        if (new_capacity <= capacity())
+            return;
+        pointer new_start = data_allocator::allocate(new_capacity);
+        pointer new_finish = mySTL::uninitialized_copy(start, finish, new_start);
+        destroy(start, finish); 
+        deallocate();
+        start = new_start;
+        finish = new_finish;
+        end_of_storage = start + new_capacity;
+    }
+    inline void swap(myVector<T, Alloc> &rhs) {
+        mySTL::swap(start, rhs.start);
+        mySTL::swap(finish, rhs.finish);
+        mySTL::swap(end_of_storage, rhs.end_of_storage);
     }
     void resize(size_type new_size) { resize(new_size, T()); }
     void clear() { erase(begin(), end()); }
@@ -121,11 +137,11 @@ void myVector<T, Alloc>:: insert_aux(iterator position, const T& x) {
             new_finish = mySTL::uninitialized_copy(position, finish, new_finish);
         }
         catch(...) {
-            destory(new_start, new_finish);
+            destroy(new_start, new_finish);
             data_allocator::deallocate(new_start, len);
             throw;
         }
-        destory(begin(), end());
+        destroy(begin(), end());
         deallocate();
 
         start = new_start;
@@ -166,11 +182,11 @@ void myVector<T, Alloc>::insert(iterator position, size_type n, const T& x) {
             new_finish = mySTL::uninitialized_copy(position, finish, new_finish);
         }
         catch(...) {
-            destory(new_start, new_finish);
+            destroy(new_start, new_finish);
             data_allocator::deallocate(new_start, len);
             throw;
         }
-        destory(begin(), end());
+        destroy(begin(), end());
         deallocate();
 
         start = new_start;

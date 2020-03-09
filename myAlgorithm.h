@@ -4,7 +4,7 @@
 #include <cstring>
 #include "myTrait.h"
 namespace mySTL{
-/*****************************************底层算法***************************************/
+    /*****************************************底层算法***************************************/
     template<class ForwardIterator, class Size, class T>
     inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T& x) {
         ForwardIterator cur = first;
@@ -97,7 +97,7 @@ namespace mySTL{
         return mySTL::__distance(first, last, category());
     }
 
-/*****************************************上层算法***************************************/
+    /*****************************************常用接口算法***************************************/
     template <class InputIterator, class T>
     ptrdiff_t count(InputIterator first, InputIterator last, const T& value) {
         ptrdiff_t n;
@@ -118,6 +118,104 @@ namespace mySTL{
         InputIterator tmp = a;
         a = b;
         a = tmp;
+    }
+
+    template <class ForwardIterator, class T>
+    inline ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T &value) {
+        return __lower_bound(first, last, value, distance_type(first), iterator_category(first));
+    }
+
+    template <class ForwardIterator, class T, class Distance>
+    ForwardIterator __lower_bound(ForwardIterator first, ForwardIterator last, const T &value, Distance,
+                                  forward_iterator_tag) {
+        Distance len = 0;
+        distance(first, last, len); //求取长度
+        Distance half;
+        ForwardIterator middle;
+
+        while (len > 0) {
+            half = len >> 1;
+            middle = first;
+            advance(middle, half); //令middle指向中间位置
+            if (*middle < value) {
+                first = middle;
+                ++first; //令first指向middle下一位置
+                len = len - half - 1;
+            }
+            else
+                len = half;
+        }
+        return first;
+    }
+
+    template <class RandomAccessIterator, class T, class Distance>
+    RandomAccessIterator __lower_bound(RandomAccessIterator first, RandomAccessIterator last, const T &value, 
+                                            Distance*, random_access_iterator_tag) {
+        Distance len = last - first;
+        Distance half;
+        RandomAccessIterator middle;
+
+        while (len > 0) {
+            half = len >> 1;
+            middle = first;
+            middle = first + half;
+            if (*middle < value) {
+                first = middle + 1;
+                len = len - half - 1;
+            }
+            else
+                len = half;
+        }
+        return first;
+    }
+
+    template <class ForwardIterator, class T>
+    inline ForwardIterator upper_bound(ForwardIterator first, ForwardIterator last, const T &value) {
+        return __upper_bound(first, last, value, distance_type(first), iterator_category(first));
+    }
+
+    template <class ForwardIterator, class T, class Distance>
+    ForwardIterator __upper_bound(ForwardIterator first, ForwardIterator last, const T &value, Distance *,
+                                  forward_iterator_tag) {
+        Distance len = 0;
+        distance(first, last, len); //求取长度
+        Distance half;
+        ForwardIterator middle;
+
+        while (len > 0) {
+            half = len >> 1;
+            middle = first;
+            advance(middle, half); //令middle指向中间位置
+            if (value < *middle)
+                len = half;
+            else {
+                first = middle;
+                ++first;
+                len = len - half - 1;
+            }
+        }
+        return first;
+    }
+
+    template <class RandomAccessIterator, class T, class Distance>
+    RandomAccessIterator __upper_bound(RandomAccessIterator first, RandomAccessIterator last, const T &value,
+                                       Distance *, random_access_iterator_tag) {
+        Distance len = last - first;
+        Distance half;
+        RandomAccessIterator middle;
+
+        while (len > 0) {
+            half = len >> 1;
+            middle = first;
+            middle = first + half;
+            if (value < *middle)
+                len = half;
+            else {
+                first = middle + 1;
+                len = len - half - 1;
+            }
+        }
+        return first;
     }
 }
 #endif

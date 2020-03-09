@@ -46,19 +46,15 @@ struct __rb_tree_base_iterator
     typedef mySTL::bidirectional_iterator_tag iterator_category;
     typedef ptrdiff_t difference_type;
     base_ptr node;
-    void increment()
-    {
-        if (node->right != 0)
-        {
+    void increment() {
+        if (node->right != 0) {
             node = node->right;
             while (node->left != 0)
                 node = node->left;
         }
-        else
-        {
+        else {
             base_ptr y = node->parent;
-            while (node == y->right)
-            {
+            while (node == y->right) {
                 node = y;
                 y = y->parent;
             }
@@ -66,22 +62,18 @@ struct __rb_tree_base_iterator
                 node = y;
         }
     }
-    void decrement()
-    {
+    void decrement() {
         if (node->color == __rb_tree_red && node->parent->parent == node)
             node = node->right;
-        else if (node->left != 0)
-        {
+        else if (node->left != 0) {
             base_ptr y = node->left;
             while (y->right != 0)
                 y = y->right;
             node = y;
         }
-        else
-        {
+        else {
             base_ptr y = node->parent;
-            while (node == y->left)
-            {
+            while (node == y->left) {
                 node = y;
                 y = y->parent;
             }
@@ -164,7 +156,7 @@ protected:
         return tmp;
     }
     void destroy_node(link_type p) {
-        destory(&p->value_field);
+        destroy(&p->value_field);
         put_node(p);
     }
 
@@ -290,10 +282,9 @@ private:
         __rb_tree_rebalance(z, header->parent);//颜色放在此设定
         ++node_count;
         return iterator(z);
-    }
-    //删除时旋转
+    }   
     inline base_ptr rb_tree_rebalance_for_erase(base_ptr z, base_ptr &root, base_ptr &leftmost,
-        base_ptr &rightmost) {
+                                    base_ptr &rightmost) {//删除后保证平衡
         base_ptr y = z;
         base_ptr x = nullptr;
         base_ptr x_parent = nullptr;
@@ -301,7 +292,7 @@ private:
             x = y->right;
         else // z至少存在一个孩子
             if (!y->right)
-            x = y->left;
+                x = y->left;
         else {
             y = y->right;
             while (y->left)
@@ -421,9 +412,6 @@ private:
         }
         return y;
     }
-    link_type __copy(link_type x, link_type y) {
-
-    }
     void init() {
         header = get_node();
         color(header) = __rb_tree_red;
@@ -494,7 +482,7 @@ public:
         iterator j = iterator(y);
         return (j == end() || key_compare(k, key(j.node))) ? end() : j;
     }
-    void erase_aux(link_type x) noexcept {
+    void erase_aux(link_type x)  {
         while (x) {// 递归式删除
             erase_aux(right(x));
             link_type y = left(x);
@@ -515,7 +503,7 @@ public:
             while (first != last)
                 erase(first++);
     }
-    void clear(void) noexcept {
+    void clear(void) {
         if (node_count) {
             erase_aux(root());
             leftmost() = header;
@@ -524,7 +512,7 @@ public:
             node_count = 0;
         }
     }
-    const_iterator lower_bound(const key_type &k) const noexcept {
+    const_iterator lower_bound(const key_type &k) const {
         link_type y = header;
         link_type x = root();
         while (x)
@@ -534,7 +522,7 @@ public:
                 x = right(x);
         return const_iterator(y);
     }
-    iterator upper_bound(const key_type &k) noexcept {
+    iterator upper_bound(const key_type &k)  {
         link_type y = header;
         link_type x = root();
         while (x)

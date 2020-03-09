@@ -8,7 +8,7 @@ struct __deque_iterator
 {        
 public:
     /****************************特性*****************************/
-    typedef typename myTraits::random_access_iterator_tag iterator_category;
+    typedef typename mySTL::random_access_iterator_tag iterator_category;
     typedef __deque_iterator<T, BufSiz> iterator;
     typedef __deque_iterator<T, BufSiz> const_iterator;     
     typedef T value_type;
@@ -109,7 +109,7 @@ public:
     typedef size_t size_type;
     typedef ptrdiff_t difference_type;
     typedef pointer* map_pointer;
-    typedef myTraits::random_access_iterator_tag iterator_category;
+    typedef mySTL::random_access_iterator_tag iterator_category;
     typedef __deque_iterator<T, BufSiz> iterator;
     typedef simple_alloc<value_type, Alloc> data_allocator;
     typedef simple_alloc<pointer, Alloc> map_allocator;
@@ -152,8 +152,8 @@ protected:
         map_pointer cur;
         try {
             for (cur = start.node; cur < finish.node; ++cur)
-                myAlgorithm::uninitialized_fill(*cur, *cur + iterator::buffer_size(), value);
-            myAlgorithm::uninitialized_fill(finish.first, finish.cur, value);
+                mySTL::uninitialized_fill(*cur, *cur + iterator::buffer_size(), value);
+            mySTL::uninitialized_fill(finish.first, finish.cur, value);
         }
         catch (...) {
             while (cur != start.node) {
@@ -257,15 +257,15 @@ public:
         if (map_size > 2 * new_num_node) {
             new_nstart = map + (map_size - new_num_node) / 2 + (add_at_front ? nodes_to_add : 0);
             if (new_nstart < start.node)
-                myAlgorithm::copy(start.node, finish.node + 1, new_nstart);
+                mySTL::copy(start.node, finish.node + 1, new_nstart);
             else
-                myAlgorithm::copy_backward(start.node, finish.node + 1, new_nstart + old_num_nodes);
+                mySTL::copy_backward(start.node, finish.node + 1, new_nstart + old_num_nodes);
         }
         else {//配置新空间
             size_type new_map_size = map_size + max(map_size, nodes_to_add) + 2;//两倍
             map_pointer new_map = map_allocator::allocate(new_map_size);
             new_nstart = new_map + (new_map_size - new_num_node) / 2 + (add_at_front ? nodes_to_add : 0);
-            myAlgorithm::copy(start.node, finish.node, new_nstart);
+            mySTL::copy(start.node, finish.node, new_nstart);
             map_allocator::deallocate(map, map_size);
             map = new_map;
             map_size = new_map_size;
@@ -276,7 +276,7 @@ public:
     void pop_back() {
         if (finish.cur != finish.first) {
             --finish.cur;
-            destory(finish.cur);
+            destroy(finish.cur);
         }
         else
             pop_back_aux();
@@ -285,18 +285,18 @@ public:
         deallocate_node(finish.first);
         finish.set_node(finish.node - 1);
         finish.cur = finish.last - 1;
-        destory(finish.cur);
+        destroy(finish.cur);
     }
     void pop_front() {
         if (start.cur != start.last - 1) {
-            destory(start.cur);
+            destroy(start.cur);
             ++start.cur;
         }
         else
             pop_front_aux();
     }
     void pop_front_aux() {
-        destory(start.cur);
+        destroy(start.cur);
         deallocate_node(start.first);
         start.set_node(start.node + 1);
         start.cur = start.first;
@@ -306,27 +306,27 @@ public:
         ++next;
         difference_type index = pos - start;
         if (index < difference_type((size() >> 1))) {
-            myAlgorithm::copy_backward(start, pos, next);
+            mySTL::copy_backward(start, pos, next);
             pop_front();
         }
         else {
-            myAlgorithm::copy(next, finish, pos);
+            mySTL::copy(next, finish, pos);
             pop_back();
         }
         return start + index;
     }
     void clear() {
         for (map_pointer node = start.node + 1; node < finish.node; ++node) {
-            destory(*node, *node + iterator::buffer_size());
+            destroy(*node, *node + iterator::buffer_size());
             data_allocator::deallocate(*node, iterator::buffer_size());
         }
         if (start.node != finish.node) {
-            destory(start.cur, start.last);
-            destory(finish.first, finish.cur);
+            destroy(start.cur, start.last);
+            destroy(finish.first, finish.cur);
             data_allocator::deallocate(finish.first, iterator::buffer_size());
         }
         else 
-            destory(start.cur, finish.cur);
+            destroy(start.cur, finish.cur);
         finish = start;
     }
     iterator erase(iterator first, iterator last) {
@@ -338,17 +338,17 @@ public:
             difference_type n = last - first;//清除区间的长度
             difference_type elems_before = first - start;//清除区间前方元素个数
             if (elems_before < (size() - n) / 2) {//前方元素比较少
-                myAlgorithm::copy_backward(start, first, last);
+                mySTL::copy_backward(start, first, last);
                 iterator new_start = start + n;
-                destory(start, new_start);
+                destroy(start, new_start);
                 for(map_pointer cur = start.node; cur < new_start.node; ++cur) 
                     data_allocator::deallocate(*cur, iterator::buffersize());
                 start = new_start;
             }
             else {
-                myAlgorithm::copy(last, finish, first);
+                mySTL::copy(last, finish, first);
                 iterator new_finish = finish - n;
-                destory(new_finish, finish);
+                destroy(new_finish, finish);
                 for(map_pointer cur = new_finish.node + 1; cur <= finish.node; ++cur) 
                     data_allocator::deallocate(*cur, iterator::buffersize());
                 finish = new_finish;
@@ -382,7 +382,7 @@ public:
             pos = start + index;
             iterator pos1 = pos;
             ++pos1;
-            myAlgorithm::copy(front2, pos1, front1);
+            mySTL::copy(front2, pos1, front1);
         }
         else {
             push_back(back());
@@ -391,7 +391,7 @@ public:
             iterator back2 = back1;
             back2--;
             pos = start + index;
-            myAlgorithm::copy_backward(pos, back2, back1);
+            mySTL::copy_backward(pos, back2, back1);
         }
         *pos = x_copy;
         return pos;
