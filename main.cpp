@@ -9,6 +9,8 @@
 #include "myUnordered_map.h"
 #include "myUnordered_set.h"
 #include <iostream>
+#include <time.h>
+#include <map>
 using namespace std;
 int main() {
     cout << "vector:";
@@ -20,6 +22,7 @@ int main() {
     test.insert(test.begin() + 3, 2, 8);
     test.erase(test.begin() + 3);
     mySTL::swap(test[0], test[1]);
+    mySTL::sort(test.begin(), test.end(), mySTL::less<int>());
     for (auto iter = test.begin(); iter != test.end(); iter++) {
         cout << *iter << ' ';
     }
@@ -66,16 +69,26 @@ int main() {
     cout << set.size() << endl;
     for (auto iter = set.begin(); iter != set.end(); iter++)
         cout << *iter << ' ';
-
+    
+    int start = clock();
     cout << "\nmap:";
     myMap<int, int> m;
-    m[1] = 3;
-    m[8] = 6;
-    m[9] = 8;
-    m.erase(m.begin());
-    cout << m.size() << endl;
-    for (auto iter = m.begin(); iter != m.end(); iter++)
-        cout << iter->second << ' ';
+    for (int i = 0; i < 10000; i++)
+        m.insert(mySTL::pair<const int, int>(i, i));
+    // m[1] = 3;
+    // m[8] = 6;
+    // m[9] = 8;
+    // m.erase(m.begin());
+    cout << "mymap time is" << clock() - start << endl;
+    start = clock();
+    map<int, int> sm;
+    for (int i = 0; i < 10000; i++)
+        sm.insert(std::pair<const int, int>(i, i));
+
+    // cout << m.size() << endl;
+    // for (auto iter = m.begin(); iter != m.end(); iter++)
+    //     cout << iter->second << ' ';
+    cout << "map time is" << clock() - start << endl;
 
     cout << "\nunoedered_map:";
     myUnordered_map<int, int> um;

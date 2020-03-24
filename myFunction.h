@@ -28,6 +28,16 @@ namespace mySTL {
         const T& operator() (const T& x) const { return x; }
     };
 
+    template <class T>
+    struct less : public binary_function<T, T, bool> {
+        bool operator() (const T& x, const T& y) const { return x < y; }
+    };
+
+    template <class T>
+    struct greater : public binary_function<T, T, bool> {
+        bool operator() (const T& x, const T& y) const { return x > y; }
+    };
+
     //选择函数
     template <class Pair>
     struct select1st : public unary_function<Pair, typename Pair::first_type> {

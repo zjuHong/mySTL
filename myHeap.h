@@ -3,7 +3,7 @@
 #include "myStruct.h"
 #include "myAlgorithm.h"
 #include "myTrait.h"
-namespace myAlgorithm {    
+namespace mySTL {    
     /*****************************************heap算法***************************************/
     template <class RandomAccessIterator, class Distance, class T, 
         class Compare = less<typename RandomAccessIterator::value_type>>

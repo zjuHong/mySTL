@@ -19,11 +19,11 @@ Sequence c;
     explicit myPriority_queue(const Compare& x) : c(), comp(x) {}
     template <class InputIterator>
     myPriority_queue(InputIterator first, InputIterator last, const Compare& x) : c(first, last), comp(x) {
-        myAlgorithm::make_heap(c.begin(), c.end(), comp);
+        mySTL::make_heap(c.begin(), c.end(), comp);
     }
     template <class InputIterator>
     myPriority_queue(InputIterator first, InputIterator last) : c(first, last) {
-        myAlgorithm::make_heap(c.begin(), c.end(), comp);
+        mySTL::make_heap(c.begin(), c.end(), comp);
     }
     bool empty() { return c.empty(); }
     size_type size() { return c.size(); }
@@ -32,7 +32,7 @@ Sequence c;
     void push(const value_type& x) { 
         try {
             c.push_back(x); 
-            myAlgorithm::push_heap(c.begin(), c.end(), comp);
+            mySTL::push_heap(c.begin(), c.end(), comp);
         }
         catch(...) {
             c.clear();
@@ -41,7 +41,7 @@ Sequence c;
     }
     void pop() { 
         try {
-            myAlgorithm::pop_heap(c.begin(), c.end(), comp);
+            mySTL::pop_heap(c.begin(), c.end(), comp);
             c.pop_back(); 
         }
         catch(...) {

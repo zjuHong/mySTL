@@ -3,6 +3,9 @@
 #include "myStruct.h"
 #include <cstring>
 #include "myTrait.h"
+#include "myHeap.h"
+#include "myFunction.h"
+
 namespace mySTL{
     /*****************************************底层算法***************************************/
     template<class ForwardIterator, class Size, class T>
@@ -216,6 +219,139 @@ namespace mySTL{
             }
         }
         return first;
+    }
+
+    template <class RandomAccessIterator, class T, class Compare = less<typename RandomAccessIterator::value_type>>
+    void __partial_sort(RandomAccessIterator first, RandomAccessIterator middle, RandomAccessIterator last, T*, 
+                                                                    const Compare &comp = Compare()) {
+        mySTL::make_heap(first, middle, comp);
+        for (RandomAccessIterator i = middle; i < last; ++i) {
+            if (*i < *first) 
+                mySTL::__pop_heap(first, middle, i, T(*i), distance_type(first), Compare());
+        }
+        mySTL::sort_heap(first, middle, comp);
+    }
+    template <class RandomAccessIterator, class Compare = less<typename RandomAccessIterator::value_type>>
+    inline void partial_sort(RandomAccessIterator first, RandomAccessIterator middle, RandomAccessIterator last, 
+                                                                    const Compare &comp = Compare()) {
+        __partial_sort(first, middle, last, value_type(first), comp);
+    }
+
+    /****************************sort相关*****************************/
+    const int __stl_threshold = 16; 
+
+    template <class RandomAccessIterator, class T, class Compare = less<typename RandomAccessIterator::value_type>>
+    void __unguarded_linear_insert(RandomAccessIterator last, T value, 
+                                                                    const Compare &comp = Compare()) {
+        RandomAccessIterator next = last;
+        --next;
+        while (comp(value, *next)) {//大于value的往后移
+            *last = *next;
+            last = next;
+            --next;
+        }
+        *last = value;
+    }
+
+    template <class RandomAccessIterator, class T, class Compare = less<typename RandomAccessIterator::value_type>>
+    void __linear_insert(RandomAccessIterator first, RandomAccessIterator last, T*, 
+                                                                    const Compare &comp = Compare()) {
+        T value = *last;
+        if (comp(value, *first)) {
+            copy_backward(first, last, last + 1);
+            *first = value;
+        }
+        else
+            __unguarded_linear_insert(last, value, comp);
+    }
+
+    template <class RandomAccessIterator, class Compare = less<typename RandomAccessIterator::value_type>>
+    void __insertion_sort(RandomAccessIterator first, RandomAccessIterator last, 
+                                                                    const Compare &comp = Compare()) {
+        if (first == last) return;
+        for (RandomAccessIterator i = first + 1; i != last; ++i) 
+            __linear_insert(first, i, value_type(first), comp);
+    }
+
+    template <class RandomAccessIterator, class T, class Compare = less<typename RandomAccessIterator::value_type>>
+    void __unguarded_insertion_sort_aux(RandomAccessIterator first, RandomAccessIterator last, T*, 
+                                                                    const Compare &comp = Compare()) {
+        for (RandomAccessIterator i = first; i != last; ++i) 
+            __unguarded_linear_insert(i, T(*i), comp);
+    }
+
+    template <class RandomAccessIterator, class Compare = less<typename RandomAccessIterator::value_type>>
+    void __unguarded_insertion_sort(RandomAccessIterator first, RandomAccessIterator last, 
+                                                                    const Compare &comp = Compare()) {
+        __unguarded_insertion_sort_aux(first, last, value_type(first), comp);
+    }
+
+    template <class RandomAccessIterator, class Compare = less<typename RandomAccessIterator::value_type>>
+    void __final_insertion_sort(RandomAccessIterator first, RandomAccessIterator last, 
+                                                                    const Compare &comp = Compare()) {
+        //子序列已经有相当程度的排序，但尚未完全排序
+        if (last - first > __stl_threshold) {//大于16就分割成两部分
+            __insertion_sort(first, first + __stl_threshold, comp);
+            __unguarded_insertion_sort(first + __stl_threshold, last, comp);
+        }
+        else
+            __insertion_sort(first, last, comp);
+    }
+
+    template <class T, class Compare = less<typename T::value_type>>
+    inline const T& __median(const T& a, const T& b, const T& c, 
+                                                                    const Compare &comp = Compare()) {
+        if (comp(a, b)) 
+            if (comp(b, c)) return b; 
+            else if (comp(a, c)) return c;
+            else return a;
+        else if (comp(a, c)) return a;
+        else if (comp(b, c)) return c;
+        else return b;
+    }
+
+    template <class RandomAccessIterator, class T, class Compare = less<typename RandomAccessIterator::value_type>>
+    RandomAccessIterator __unguarded_partion(RandomAccessIterator first, RandomAccessIterator last, T pivot, 
+                                                                    const Compare &comp = Compare()) {
+        while (true) {
+            while (comp(*first, pivot)) ++first;
+            --last;
+            while (comp(pivot, *last)) --last;
+            if (!(comp(*first, *last))) return last;
+            swap(first, last);
+            ++first;
+        }
+    }
+
+    template <class RandomAccessIterator, class T, class Size, class Compare = less<typename RandomAccessIterator::value_type>> 
+    void __introsort_loop(RandomAccessIterator first, RandomAccessIterator last, T*, Size depth_limit, 
+                                                                    const Compare &comp = Compare()) {
+        while (last - first > __stl_threshold) {
+            if (depth_limit == 0) {//分割恶化采用堆排序
+                partial_sort(first, last, last, comp);
+                return;
+            }
+            --depth_limit;
+            RandomAccessIterator cut = __unguarded_partion(first, last, T(__median(*first, *(first + (last - first) / 2), 
+                *(last - 1), comp)), comp);
+            __introsort_loop(cut, last, value_type(first), depth_limit, comp);//右半段递归sort
+            last = cut;//之后继续递归，对左半段递归
+        }
+    }
+    template <class Size>
+    inline Size __lg(Size n) {//log2(n)
+        Size k;
+        for (k = 0; n > 1; n >>= 1) ++k;
+        return k;
+    }
+
+    template <class RandomAccessIterator, class Compare = less<typename RandomAccessIterator::value_type>> 
+    inline void sort(RandomAccessIterator first, RandomAccessIterator last, 
+                                                                    const Compare &comp = Compare()) {
+        if (!(first == last)) { //先快排最后插入排序
+            __introsort_loop(first, last, value_type(first), __lg((last - first) * 2), comp);
+            __final_insertion_sort(first, last, comp);
+        }
     }
 }
 #endif
