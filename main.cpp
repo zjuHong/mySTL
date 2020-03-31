@@ -11,7 +11,24 @@
 #include <iostream>
 #include <time.h>
 #include <map>
+#include "myString.h"
+#include "mySmartptr.h"
 using namespace std;
+
+class parent;
+class child;
+class parent
+{
+public:
+    myWeakPtr<child> ch;
+};
+
+class child
+{
+public:
+    mySharePtr<parent> pt;
+};
+
 int main() {
     cout << "vector:";
     myVector<int> test(9, 0);
@@ -108,6 +125,20 @@ int main() {
     cout << us.size() << endl;
     for (auto iter = us.begin(); iter != us.end(); iter++)
         cout << *iter << ' ';
+
+    cout << "\nstring:";
+    myString str1("hello ");
+    myString str2 = "world";
+    myString str3 = str1 + str2;
+    cout << "str1->" << str1 << " size->" << str1.length() << endl;
+    cout << "str2->" << str2 << " size->" << str2.length() << endl;
+    cout << "str3->" << str3 << " size->" << str3.length() << endl;
+
+    cout << "\nsmartptr:";
+    int *elem = new int(5);
+    mySharePtr<int> ms(elem);
+    myWeakPtr<int> wi(ms);
+    cout << wi.expired() << endl;
 
     system("pause");
     return 0;
