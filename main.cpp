@@ -13,6 +13,7 @@
 #include <map>
 #include "myString.h"
 #include "mySmartptr.h"
+#include "mySkiplist.h"
 using namespace std;
 
 class parent;
@@ -95,7 +96,6 @@ int main() {
     // m[1] = 3;
     // m[8] = 6;
     // m[9] = 8;
-    // m.erase(m.begin());
     cout << "mymap time is" << clock() - start << endl;
     start = clock();
     map<int, int> sm;
@@ -133,6 +133,13 @@ int main() {
     cout << "str1->" << str1 << " size->" << str1.length() << endl;
     cout << "str2->" << str2 << " size->" << str2.length() << endl;
     cout << "str3->" << str3 << " size->" << str3.length() << endl;
+
+    cout << "skiplist:";
+    mySkipList<int> sl;
+    for (int i = 0; i < 10; i++)    
+        sl.insert(i);
+    sl.erase(5);
+    cout << sl.find(5) << ' ' << sl.find(6);
 
     cout << "\nsmartptr:";
     int *elem = new int(5);
